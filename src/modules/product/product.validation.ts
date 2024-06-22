@@ -4,14 +4,14 @@ import { NewCreatedProduct } from './product.interfaces';
 
 const createProductBody: Record<keyof NewCreatedProduct, any> = {
   description: Joi.string().required(),
-  image: Joi.string().required(),
+  image: Joi.any(),
   name: Joi.string().required(),
   price: Joi.number().required(),
-  quantity: Joi.number(),
 };
 
 export const createProduct = {
   body: Joi.object().keys(createProductBody),
+  file: Joi.any(),
 };
 
 export const getProducts = {
@@ -37,12 +37,12 @@ export const updateProduct = {
   body: Joi.object()
     .keys({
       description: Joi.string(),
-      image: Joi.string(),
+      image: Joi.any(),
       name: Joi.string(),
       price: Joi.number(),
-      quantity: Joi.number(),
     })
     .min(1),
+  file: Joi.any(),
 };
 
 export const deleteProduct = {

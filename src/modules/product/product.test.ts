@@ -84,7 +84,7 @@ describe('Product routes', () => {
         price: newProduct.price,
         image: newProduct.image,
         stock: {
-          quantity: newProduct.quantity,
+          quantity: 0,
           id: expect.anything(),
         },
       });
@@ -322,7 +322,6 @@ describe('Product routes', () => {
         price: productOne.price,
         image: productOne.image,
         userId: productOne.userId,
-        quantity: productOne.quantity,
       });
     });
 

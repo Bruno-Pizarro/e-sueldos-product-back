@@ -9,14 +9,12 @@ export const productMockNoId: IProduct = {
   userId: new mongoose.Types.ObjectId(),
   image: faker.image.imageUrl(),
   price: faker.datatype.number(),
-  quantity: faker.datatype.number(),
 };
 export const productMockNoUser = {
   name: faker.name.findName(),
   description: faker.commerce.productDescription(),
   image: faker.image.imageUrl(),
   price: faker.datatype.number(),
-  quantity: faker.datatype.number(),
 };
 export const productMock = {
   id: new mongoose.Types.ObjectId(),
@@ -25,7 +23,6 @@ export const productMock = {
   userId: new mongoose.Types.ObjectId(),
   image: faker.image.imageUrl(),
   price: faker.datatype.number(),
-  quantity: faker.datatype.number(),
 };
 export const productMockTwo = {
   id: new mongoose.Types.ObjectId(),
@@ -34,5 +31,4 @@ export const productMockTwo = {
   userId: new mongoose.Types.ObjectId(),
   image: faker.image.imageUrl(),
   price: faker.datatype.number(),
-  quantity: faker.datatype.number(),
 };

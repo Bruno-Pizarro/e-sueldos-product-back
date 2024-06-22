@@ -2,18 +2,29 @@ import express, { Router } from 'express';
 import { validate } from '../../modules/validate';
 import { auth } from '../../modules/auth';
 import { productController, productValidation } from '../../modules/product';
+import upload from '../../modules/multer';
 
 const router: Router = express.Router();
 
 router
   .route('/')
-  .post(auth('manageProducts'), validate(productValidation.createProduct), productController.createProduct)
+  .post(
+    auth('manageProducts'),
+    upload.single('image'),
+    validate(productValidation.createProduct),
+    productController.createProduct
+  )
   .get(auth('getProducts'), validate(productValidation.getProducts), productController.getProducts);
 
 router
   .route('/:productId')
   .get(auth('getProducts'), validate(productValidation.getProduct), productController.getProduct)
-  .patch(auth('manageProducts'), validate(productValidation.updateProduct), productController.updateProduct)
+  .patch(
+    auth('manageProducts'),
+    upload.single('image'),
+    validate(productValidation.updateProduct),
+    productController.updateProduct
+  )
   .delete(auth('manageProducts'), validate(productValidation.deleteProduct), productController.deleteProduct);
 
 export default router;
@@ -71,7 +82,7 @@ export default router;
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -81,16 +92,12 @@ export default router;
  *                 type: string
  *               image:
  *                 type: string
+ *                 format: binary
  *               price:
  *                 type: number
- *               quantity:
- *                 type: number
- *             example:
- *               name: fake name
- *               description: fake description
- *               image: http://fake-image.jpg
- *               price: 10
- *               quantity: 10
+ *           encoding:
+ *             image:
+ *               contentType: image/jpeg
  *     responses:
  *       "200":
  *         description: OK
@@ -98,29 +105,6 @@ export default router;
  *           application/json:
  *             schema:
  *                $ref: '#/components/schemas/Product'
- *       "401":
- *         $ref: '#/components/responses/Unauthorized'
- *       "403":
- *         $ref: '#/components/responses/Forbidden'
- *       "404":
- *         $ref: '#/components/responses/NotFound'
- *
- *   delete:
- *     summary: Delete a product
- *     description: Logged in products can delete only themselves. Only admins can delete other products.
- *     tags: [Products]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: Product id
- *     responses:
- *       "200":
- *         description: No content
  *       "401":
  *         $ref: '#/components/responses/Unauthorized'
  *       "403":
@@ -141,13 +125,14 @@ export default router;
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
  *               - name
  *               - description
  *               - price
+ *               - image
  *             properties:
  *               name:
  *                 type: string
@@ -155,16 +140,12 @@ export default router;
  *                 type: string
  *               image:
  *                 type: string
+ *                 format: binary
  *               price:
  *                  type: number
- *               quantity:
- *                  type: number
- *             example:
- *               name: fake name
- *               description: fake description
- *               image: http://fake-image.jpg
- *               price: 10
- *               quantity: 10
+ *           encoding:
+ *             image:
+ *               contentType: image/jpeg  # Ajusta según el tipo de imagen que manejes
  *     responses:
  *       "201":
  *         description: Created
@@ -176,69 +157,35 @@ export default router;
  *         $ref: '#/components/responses/Unauthorized'
  *       "403":
  *         $ref: '#/components/responses/Forbidden'
- *
+ */
+
+/**
+ * @swagger
+ * /products/{id}/image:
  *   get:
- *     summary: Get all products
- *     description: Only admins can retrieve all products.
+ *     summary: Get a product image
+ *     description: Logged in products can fetch only their own product information. Only admins can fetch other products.
  *     tags: [Products]
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - in: query
- *         name: name
+ *       - in: path
+ *         name: id
+ *         required: true
  *         schema:
  *           type: string
- *         description: Product name
- *       - in: query
- *         name: sortBy
- *         schema:
- *           type: string
- *         description: sort by query in the form of field:desc/asc (ex. name:asc)
- *       - in: query
- *         name: projectBy
- *         schema:
- *           type: string
- *         description: project by query in the form of field:hide/include (ex. name:hide)
- *       - in: query
- *         name: limit
- *         schema:
- *           type: integer
- *           minimum: 1
- *         default: 10
- *         description: Maximum number of products
- *       - in: query
- *         name: page
- *         schema:
- *           type: integer
- *           minimum: 1
- *           default: 1
- *         description: Page number
+ *         description: Product id
  *     responses:
  *       "200":
  *         description: OK
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 results:
- *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/Product'
- *                 page:
- *                   type: integer
- *                   example: 1
- *                 limit:
- *                   type: integer
- *                   example: 10
- *                 totalPages:
- *                   type: integer
- *                   example: 1
- *                 totalResults:
- *                   type: integer
- *                   example: 1
+ *                $ref: '#/components/schemas/Product'
  *       "401":
  *         $ref: '#/components/responses/Unauthorized'
  *       "403":
  *         $ref: '#/components/responses/Forbidden'
+ *       "404":
+ *         $ref: '#/components/responses/NotFound'
  */

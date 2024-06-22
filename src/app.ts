@@ -6,12 +6,17 @@ import compression from 'compression';
 import cors from 'cors';
 import passport from 'passport';
 import httpStatus from 'http-status';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import config from './config/config';
 import { morgan } from './modules/logger';
 import { jwtStrategy } from './modules/auth';
 import { authLimiter } from './modules/utils';
 import { ApiError, errorConverter, errorHandler } from './modules/errors';
 import routes from './routes/v1';
+
+const filename = fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
 
 const app: Express = express();
 
@@ -48,6 +53,9 @@ passport.use('jwt', jwtStrategy);
 if (config.env === 'production') {
   app.use('/v1/auth', authLimiter);
 }
+
+// images
+app.use('/v1/uploads', express.static(path.join(dirname, '../public/uploads')));
 
 // v1 api routes
 app.use('/v1', routes);

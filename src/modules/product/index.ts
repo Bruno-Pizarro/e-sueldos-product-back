@@ -3,5 +3,6 @@ import * as productInterfaces from './product.interfaces';
 import Product from './product.model';
 import * as productService from './product.service';
 import * as productValidation from './product.validation';
+import '../stock';
 
 export { Product, productController, productInterfaces, productService, productValidation };

@@ -8,10 +8,17 @@ import pick from '../utils/pick';
 import * as productService from './product.service';
 
 export const createProduct = catchAsync(async (req: Request, res: Response) => {
-  const product = await productService.createProduct(req.body, req.user.id);
+  const userId = req.user.id;
+
+  let image;
+  if (req.file) {
+    image = req.file.path;
+  }
+
+  const product = await productService.createProduct({ ...req.body, image }, userId);
+
   res.status(httpStatus.CREATED).send(product);
 });
-
 export const getProducts = catchAsync(async (req: Request, res: Response) => {
   const filter = pick(req.query, ['name']);
   const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page', 'projectBy']);
@@ -31,9 +38,14 @@ export const getProduct = catchAsync(async (req: Request, res: Response) => {
 
 export const updateProduct = catchAsync(async (req: Request, res: Response) => {
   if (typeof req.params['productId'] === 'string') {
+    let image;
+    if (req.file) {
+      image = req.file.path;
+    }
+
     const product = await productService.updateProductById(
       new mongoose.Types.ObjectId(req.params['productId']),
-      req.body,
+      image ? { ...req.body, image } : req.body,
       req.user.id
     );
     res.send(product);
