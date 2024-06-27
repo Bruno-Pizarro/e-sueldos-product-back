@@ -59,6 +59,13 @@ export const updateProductById = async (
   if (!product) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
   }
+  if (updateBody.image && product.image && updateBody.image !== product.image) {
+    try {
+      unlinkSync(product.image);
+    } catch (error) {
+      logger.error(`Failed to delete image: ${product.image}`, error);
+    }
+  }
   Object.assign(product, { ...updateBody, userId });
   await product.save();
   await publisher.publishEvent('products.update', product);

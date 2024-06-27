@@ -27,8 +27,8 @@ export const getProducts = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const getProduct = catchAsync(async (req: Request, res: Response) => {
-  if (typeof req.params['productId'] === 'string') {
-    const product = await productService.getProductById(new mongoose.Types.ObjectId(req.params['productId']));
+  if (typeof req.params.productId === 'string') {
+    const product = await productService.getProductById(new mongoose.Types.ObjectId(req.params.productId));
     if (!product) {
       throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
     }
@@ -37,14 +37,14 @@ export const getProduct = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const updateProduct = catchAsync(async (req: Request, res: Response) => {
-  if (typeof req.params['productId'] === 'string') {
+  if (typeof req.params.productId === 'string') {
     let image;
     if (req.file) {
       image = req.file.path;
     }
 
     const product = await productService.updateProductById(
-      new mongoose.Types.ObjectId(req.params['productId']),
+      new mongoose.Types.ObjectId(req.params.productId),
       image ? { ...req.body, image } : req.body,
       req.user.id
     );
@@ -53,8 +53,8 @@ export const updateProduct = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const deleteProduct = catchAsync(async (req: Request, res: Response) => {
-  if (typeof req.params['productId'] === 'string') {
-    await productService.deleteProductById(new mongoose.Types.ObjectId(req.params['productId']));
+  if (typeof req.params.productId === 'string') {
+    await productService.deleteProductById(new mongoose.Types.ObjectId(req.params.productId));
     res.status(httpStatus.NO_CONTENT).send();
   }
 });
